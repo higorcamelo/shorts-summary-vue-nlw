@@ -1,7 +1,8 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main class="main-container">
       <CampoBusca/>
+
     </v-main>
   </v-app>
 </template>
@@ -25,10 +26,20 @@ export default defineComponent({
 })
 </script>
 <style>
-body {
+.main-container {
+  background-color: #1E1E1E;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
   font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
   margin: 0;
   padding: 0;
+
 }
 </style>
