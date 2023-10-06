@@ -69,7 +69,6 @@ export default defineComponent({
   text-align: justify;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
-  width: 512px;
   color: #7c7c8a;
   user-select: none;
 }

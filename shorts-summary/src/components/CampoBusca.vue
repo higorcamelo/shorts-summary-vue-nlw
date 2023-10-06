@@ -40,7 +40,7 @@ export default defineComponent({
   methods: {
     youtubeShortsURL: (v: string) => {
       const regex = new RegExp(
-        '^(https?://)?(www.youtube.com|youtu.?be)/.+$'
+        '^(https?://)?(www\\.)?youtube\\.com/shorts/[A-Za-z0-9_-]+$'
       )
       return regex.test(v) || 'URL inválida'
     },
