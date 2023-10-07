@@ -10,9 +10,9 @@
         </v-img>
         <h1 class="content">Shorts Summary</h1>
       </v-container>
-      <CampoBusca/>
+      <CampoBusca @enviar-url="receberURL"/>
       <h2 class="text-resumo">Resumo</h2>
-      <p class="select-short">Escolha um Short para resumir</p>
+      <p :class="getTextStyle(selectedShortText)" >{{ selectedShortText }}</p>
     </v-main>
   </v-app>
 </template>
@@ -20,6 +20,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import CampoBusca from './components/CampoBusca.vue'
+import { parseURl } from './components/CampoBuscaHandler.ts'
+import { selectedShortText } from './components/CampoBuscaHandler.ts';
 
 export default defineComponent({
   name: 'App',
@@ -30,9 +32,21 @@ export default defineComponent({
 
   data () {
     return {
-      //
+      selectedShortText
     }
   },
+  methods:{
+    receberURL(url:string){
+      parseURl(url)
+    },
+    getTextStyle(text: string){
+      if (text === 'Escolha um Short para resumir' || text === 'Obtendo informações do vídeo') {
+        return 'select-short';
+      } else {
+        return 'custom-style';
+      }
+    }
+  }
 })
 </script>
 <style scoped>
@@ -71,5 +85,12 @@ export default defineComponent({
   font-size: 16px;
   color: #7c7c8a;
   user-select: none;
+}
+.custom-style{
+  text-align: justify;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18;
+  color: aliceblue;
+  user-select: text;
 }
 </style>
