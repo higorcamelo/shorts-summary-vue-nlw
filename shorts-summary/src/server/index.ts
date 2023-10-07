@@ -4,7 +4,7 @@ import express from 'express'
 import { download } from './download.js'
 import { transcribe } from './utils/transcribe.ts'
 import { summarize } from './utils/summarize.ts'
-import { convert } from './utils/convert.ts'
+import { convert } from './utils/convert.js'
 
 const app = express()
 app.use(express.json())

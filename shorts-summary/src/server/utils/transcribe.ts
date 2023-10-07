@@ -6,7 +6,7 @@ export async function transcribe( audioConverted: any) {
         const transcription = await transcribe(audioConverted,{
             chunk_length_s: 30,
             stride_length_s: 5,
-            language: "pt-BR",
+            language: "portuguese",
             task: "transcribe"
         })
         console.log(transcription)
