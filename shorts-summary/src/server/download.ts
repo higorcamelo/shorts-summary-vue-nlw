@@ -4,7 +4,7 @@ import fs from "fs";
 export const download = (videoID: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         const videoURl = `https://www.youtube.com/shorts/${videoID}`;
-        ytdl(videoURl, {quality: "lowestaudio", filter: "audioonly"})
+        ytdl(videoURl, {quality: 'highestaudio', filter: "audioonly"})
         .on("info", (info) => {
             const title = info.videoDetails.title;
             console.log(`Downloading "${title}"`);

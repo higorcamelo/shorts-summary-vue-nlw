@@ -4,9 +4,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 
 const filePath = '../tmp/shorts.mp4';
-const outputFilePath = '../tmp/shorts.wav';
-
-console.log(`Caminho do vídeo: ${filePath}`);
+const outputFilePath = filePath.replace('.mp4', '.wav'); // Caminho de saída diferente
 
 export const convert = () => new Promise((resolve, reject) => {
   // Verifica se ffmpegStatic é uma string antes de usá-lo
@@ -14,31 +12,43 @@ export const convert = () => new Promise((resolve, reject) => {
     ffmpeg.setFfmpegPath(ffmpegStatic);
   }
 
+  // Verifica se o arquivo de entrada existe
+  if (!fs.existsSync(filePath)) {
+    console.error('O arquivo de entrada não foi encontrado.');
+    reject(new Error('Arquivo de entrada não encontrado.'));
+    return;
+  }
+
   // Inicia a conversão do arquivo de vídeo para áudio
-  ffmpeg()
+  const command = ffmpeg()
     .input(filePath)
     .audioFrequency(16000)
     .audioChannels(1)
     .format('wav')
-    .on("end", () => {
+    .on('end', () => {
       try {
-        const buffer = fs.readFileSync(outputFilePath); // Lê o arquivo de áudio convertido em formato WAV
-        const result = wav.decode(buffer); // Decodifica o arquivo WAV para obter os dados de áudio
-        const audioData = result.channelData[0]; // Obtém os dados de áudio do canal 0
-        const float32Array = new Float32Array(audioData); // Cria um Float32Array a partir dos dados de áudio
+        const buffer = fs.readFileSync(outputFilePath);
+        const result = wav.decode(buffer);
+        const audioData = result.channelData[0];
+        const float32Array = new Float32Array(audioData);
 
-        resolve(float32Array); // Resolve a promessa com os dados de áudio
+        console.log('Áudio convertido com sucesso!');
 
-        fs.unlinkSync(outputFilePath); // Remove o arquivo WAV temporário
+        resolve(float32Array);
+        fs.unlinkSync(outputFilePath);
       } catch (err: any) {
-        console.error(`Error reading or decoding audio file: ${err.message}`);
+        console.error(`Erro ao ler ou decodificar o arquivo de áudio: ${err.message}`);
         reject(err);
       }
     })
-    .on("error", (err) => {
-      // Em caso de erro durante a conversão, rejeita a promessa com o erro
-      console.error(`Conversion error: ${err.message}`);
+    .on('error', (err) => {
+      console.error(`Erro durante a conversão: ${err.message}`);
       reject(err);
     })
     .save(outputFilePath);
+
+  // Adicione um tratamento de erro personalizado para o FFmpeg
+  command.on('stderr', (stderrLine) => {
+    console.error(`Erro do FFmpeg: ${stderrLine}`);
+  });
 });

@@ -1,10 +1,10 @@
 import cors from 'cors'
 import express from 'express'
 
-import { download } from './download.js'
+import { download } from './download.ts'
 import { transcribe } from './utils/transcribe.ts'
 import { summarize } from './utils/summarize.ts'
-import { convert } from './utils/convert.js'
+import { convert } from './utils/convert.ts'
 
 const app = express()
 app.use(express.json())
@@ -12,12 +12,11 @@ app.use(cors())
 
 app.get('/summary/:id', async (req, res) => {
   const videoID = req.params.id;
-
   try {
     const title = await download(videoID);
     
     const audioConverted = await convert()
-    //console.log(audioConverted);
+    console.log(audioConverted);
 
     const transcricao = await transcribe(audioConverted);
     return res.json({ message: `Download started for ${videoID}`, result: 'success', title, transcricao: transcricao });
