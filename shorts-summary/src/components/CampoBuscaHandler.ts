@@ -3,8 +3,9 @@ import { server } from '../server/server.ts';
 
 export const selectedShortText = ref<string>('Escolha um Short para resumir');
 
+// Função para atualizar a mensagem de carregamento
 const updateLoadingText = () => {
-  let loadingText = 'Obtendo informações do vídeo';
+  let loadingText = 'Obtendo informações do vídeo e gerando o resumo, isso pode demorar um pouco';
   let pontos = 0;
 
   return setInterval(() => {
@@ -13,10 +14,8 @@ const updateLoadingText = () => {
   }, 500); // Atualize a cada 500 milissegundos (0,5 segundos)
 };
 
-export const parseURl = async (url: string) => {
-  const tempVideoParams = url.split('https://www.youtube.com/shorts/')[1];
-  const videoID = tempVideoParams.split('?')[0];
-
+// Função para requisitar informações do vídeo e realizar o resumo
+const requestVideoSummary = async (videoID: string) => {
   // Iniciar mensagem de carregamento
   const loadingInterval = updateLoadingText();
 
@@ -25,11 +24,21 @@ export const parseURl = async (url: string) => {
     clearInterval(loadingInterval); // Limpar o intervalo de carregamento
 
     const resumo = await server.post('/summary', { text: response.data.transcricao });
-    selectedShortText.value = response.data.title + '\n' + resumo.data.summary;
+    // Adicione duas quebras de linha entre o título e o resumo
+    selectedShortText.value = response.data.title + '\n\n' + resumo.data.summary;
 
   } catch (error) {
     console.error(error);
     clearInterval(loadingInterval); // Limpar o intervalo de carregamento em caso de erro
     selectedShortText.value = 'Erro ao obter informações do vídeo';
   }
+};
+
+// Função para analisar a URL e lidar com as requisições
+export const parseURL = async (url: string) => {
+  const tempVideoParams = url.split('https://www.youtube.com/shorts/')[1];
+  const videoID = tempVideoParams.split('?')[0];
+
+  // Realizar a requisição de informações do vídeo e resumo
+  requestVideoSummary(videoID);
 };

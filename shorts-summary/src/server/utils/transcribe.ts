@@ -9,7 +9,7 @@ export async function transcribe( audioConverted: any) {
             language: "portuguese",
             task: "transcribe"
         })
-        console.log(transcription)
+        return transcription?.text
     } catch (error:any) {
         throw new Error(error.message)
     }

@@ -14,24 +14,23 @@ app.get('/summary/:id', async (req, res) => {
   const videoID = req.params.id;
   try {
     const title = await download(videoID);
-    
-    const audioConverted = await convert()
-    console.log(audioConverted);
-
+    const audioConverted = await convert();
     const transcricao = await transcribe(audioConverted);
-    return res.json({ message: `Download started for ${videoID}`, result: 'success', title, transcricao: transcricao });
-
-  } catch (error:any) {
-    return res.status(500).json({ message: 'Download failed', result: 'error', error: error.message });
+    res.json({ message: `Download started for ${videoID}`, result: 'success', title, transcricao: transcricao });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Download failed', result: 'error', error: error.message });
   }
 });
 
 app.post('/summary/', async (req, res) => {
-  const resultado = await summarize(req.body.text)
-  return res.json({ message: 'Summary created', result: 'success', summary: resultado });
-
+  try {
+    const resultado = await summarize(req.body.text);
+    res.json({ message: 'Summary created', result: 'success', summary: resultado });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Summary creation failed', result: 'error', error: error.message });
+  }
 });
 
 app.listen(3000, () => {
-  console.log('Server listening on port 3000')
-})
+  console.log('Server listening on port 3000');
+});
